@@ -135,9 +135,30 @@ class DragFactory{
             const color = buttonElement.dataset.color
 
             const newDrag = document.createElement('div')
-            newDrag.classList.add('draggable-item', `drag-${type}`, `drag-${color}`) 
+            const newDragTopBar = document.createElement('div')
+            const dragName = document.createElement('span')
+            const dragDel = document.createElement('button')
+            const dragDelIcon = document.createElement('i')
 
-            newDrag.textContent = `${type} - ${color}`
+            dragDelIcon.classList = 'fa-solid fa-x drag-del-icon'
+            dragName.innerHTML = `${type} - ${color}`
+            dragName.classList.add('drag-name')
+            dragDel.classList.add('drag-del-button')
+            newDragTopBar.classList.add('drag-top-bar')
+
+            dragDel.appendChild(dragDelIcon)
+
+            dragDel.addEventListener('click', () => {
+                dragDel.parentElement.parentElement.remove()
+            })
+
+            newDragTopBar.appendChild(dragName)
+            newDragTopBar.appendChild(dragDel)
+            newDrag.appendChild(newDragTopBar)
+
+
+            newDrag.classList.add('draggable-item', `drag-${type}`, `${color}`) 
+
 
             document.body.appendChild(newDrag) 
 
@@ -153,3 +174,11 @@ class DragFactory{
 const drag_factory = new DragFactory()
 const kit_tab_manager = new KitTabManager()
 const drag_manager = new DragManager()
+
+const clearAllButton = document.querySelector('.kit-clear-all')
+
+clearAllButton.addEventListener('click', () => {
+    document.querySelectorAll('.draggable-item').forEach(dr_item => {
+        dr_item.remove()
+    });
+})

@@ -17,6 +17,7 @@ button{
 }
 
 body{
+    font-family: Arial, Helvetica, sans-serif;
     min-height: 100vh;
     margin: 0;
     padding: 1em;
@@ -41,7 +42,7 @@ body{
 
 .kit-grid{
     display: grid;
-    width: 30vw;
+    width: auto;
     grid-template-columns: min-content auto;
 }
 
@@ -70,7 +71,7 @@ body{
 
 /* buttons */
 
-.kit-hide-button{
+.kit-hide-button, .kit-clear-all{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -91,6 +92,18 @@ body{
     color: white;
     font-size: 2em;
 }
+.kit-clear-all{
+    background-color: rgb(255, 69, 69);
+    color: white;
+    font-size: 1.5em;
+    position: relative;
+}
+
+.kit-clear-all:hover{
+    background-color: #fff;
+    color: rgb(255, 69, 69);
+}
+
 
 .kit-button{
     flex-grow: 1;
@@ -116,7 +129,7 @@ body{
     padding: 0.5rem;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
-    margin-top: 4.5em;
+    margin-top: 8.4em;
     margin-left: 1em;
     border-radius: var(--border-rad-def);
     background-color: var(--kit-bg);
@@ -143,30 +156,45 @@ body{
 /* --- Draggable Stuff --- */
 
 .draggable-item{
-    background-color: #fff;
+    display: grid;
+    grid-template-rows: 2em auto;
+    background-color: var(--lookhere);
     cursor: grab;
     border-radius: var(--border-rad-def);
-    padding: 1em;
     aspect-ratio: 1;
+    min-width: 10em;
+    user-select: none;
 }
 
-.drag-blue{
-    background-color: rgb(88, 180, 255);
-}
-.drag-green{
-    background-color: rgb(179, 255, 108);
-}
-.drag-red{
-    background-color: rgb(255, 124, 124);
-}
-.drag-yellow{
-    background-color: rgb(255, 255, 131);
-}
-.drag-gray{
-    background-color: rgb(92, 92, 92);
+.drag-top-bar{
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 0.3em;
+    background-color: rgb(47, 55, 66);
     color: white;
 }
 
+.drag-del-button{
+    transition-duration: 0.3s;
+    aspect-ratio: 1;
+    background-color: #ff7c7c;
+    color: rgb(155, 28, 28);
+    margin: auto 0;
+    height: 1.5em;
+    cursor: pointer;
+    border-radius: var(--border-rad-round);
+}
+.drag-del-button:hover{
+    background-color: #fff;
+    color: #ff2828;
+}
+.drag-del-button i{
+    aspect-ratio: 1;
+    width: 100%;
+}
 /* --- Special styles --- */
 
 .kit-top{
@@ -182,4 +210,21 @@ body{
 
 .hidden{
     display: none;
+}
+
+.blue{
+    --lookhere: rgb(88, 180, 255);
+}
+.green{
+    --lookhere: rgb(179, 255, 108);
+}
+.red{
+    --lookhere: rgb(255, 124, 124);
+}
+.yellow{
+    --lookhere: rgb(255, 255, 131);
+}
+.gray{
+    --lookhere: rgb(92, 92, 92);
+    color: white;
 }
