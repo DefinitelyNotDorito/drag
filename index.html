@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css">
+    
+    <title>DragDrop</title>
+</head>
+<body>
+    <div class="kit-grid">
+        <div class="kit-stuff-container">
+            <button class="kit-hide-button"><i class="fa-solid fa-chevron-left kit-hide-icon"></i></button>
+            <div class="kit-button-container">
+                <button class="kit-button kit-notes kit-top" id="kit-b-notes"><i class="fa-solid fa-note-sticky"></i></button>
+                <button class="kit-button" id="kit-b-timers"><i class="fa-solid fa-clock"></i></button>
+                <button class="kit-button kit-bottom" id="kit-b-other"><i class="fa-solid fa-gear"></i></button>
+            </div>
+        </div>
+        <div class="kit-tab-container">
+            <div class="kit-tab hidden" id="notes">notes</div>
+            <div class="kit-tab hidden" id="timers">timers</div>
+            <div class="kit-tab hidden" id="other">other</div>
+        </div>
+    </div>
+
+</body>
+<script src="scripts/dragkit.js"></script>
+</html>

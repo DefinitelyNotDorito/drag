@@ -1,0 +1,144 @@
+/* Variables */
+
+:root{
+    --border-rad-def: 0.8rem;
+    --border-rad-round: 3rem;
+    --bg-color: #131518; 
+    --bg-grid-color: rgb(31, 31, 41);
+    --kit-bg: rgb(45, 45, 51);
+    --lookhere: rgb(116, 246, 255);
+}
+
+/* Globals */
+
+button{
+    border: none;
+}
+
+body{
+    min-height: 100vh;
+    margin: 0;
+    padding: 1em;
+    background-size: 50px 50px;
+    background-color: var(--bg-color);
+    background-image: 
+        linear-gradient(to right, var(--bg-grid-color) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--bg-grid-color) 1px, transparent 1px);
+
+    display: flex;
+    align-items: center;
+    justify-content: left;
+}
+
+*{
+    box-sizing: border-box;
+}
+
+/* --- Toolkit for the draggable elements --- */
+
+/* main layout */
+
+.kit-grid{
+    display: grid;
+    width: 30vw;
+    grid-template-columns: min-content auto;
+}
+
+.kit-stuff-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 15vh;
+    width: clamp(30px, 8vw, 100px);
+    *{
+        transition-duration: 0.5s;
+    }
+}
+
+.kit-button-container{
+    display: flex;
+    align-items: center;
+    padding: 0.4em;
+    flex-direction: column;
+    height: clamp(100px, 60vh, 500px);
+    width: clamp(30px, 8vw, 100px);
+    border-radius: var(--border-rad-round);
+    background-color: var(--kit-bg);   
+}
+
+/* buttons */
+
+.kit-hide-button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--border-rad-round);
+    aspect-ratio: 1;
+    padding: 0;
+    background-color: var(--kit-bg);
+    width: 50%;
+    cursor: pointer;
+}
+
+.kit-hide-button:hover{
+    filter: invert();
+}
+
+.kit-hide-button i{
+    text-align: center;
+    color: white;
+    font-size: 2em;
+}
+
+.kit-button{
+    flex-grow: 1;
+    width: 100%;
+    height: 80%;
+    background-color: rgb(76, 77, 85);
+    cursor: pointer;
+}
+
+.kit-button i{
+    font-size: 2em;
+}
+
+.kit-button:hover{
+    background-color: #fff;
+}
+
+/* Kit tabs */
+
+.kit-tab{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 4.5em;
+    margin-left: 1em;
+    border-radius: var(--border-rad-def);
+    background-color: var(--kit-bg);
+    color: var(--lookhere);
+    height: clamp(100px, 60vh, 500px);
+    width: 100%;
+}
+
+.hidden{
+    display: none;
+}
+
+/* --- Special styles --- */
+
+.kit-top{
+    border-radius: var(--border-rad-round) var(--border-rad-round) 0 0;
+}
+.kit-bottom{
+    border-radius: 0 0 var(--border-rad-round) var(--border-rad-round);
+}
+
+.slideout{
+    transform: translateX(-200%);
+}
+
+.hidden{
+    display: none;
+}

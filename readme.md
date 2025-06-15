@@ -1,0 +1,1 @@
+A playground to test draggable elements with JS
