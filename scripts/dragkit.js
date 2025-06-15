@@ -98,6 +98,10 @@ class DragManager{
         })
 
         document.addEventListener('mouseup', () => {
+            
+            if (this.currentDragObject) {
+                this.currentDragObject.element.classList.remove('dragging')
+            }
             this.isDragging = false
             this.currentDragObject = null
         })
@@ -105,6 +109,7 @@ class DragManager{
     startDrag(dragObject, mouseEvent){
         this.isDragging = true
         this.currentDragObject = dragObject
+        this.currentDragObject.element.classList.add('dragging')
 
         const objectRect = dragObject.element.getBoundingClientRect()
         this.dragOffset.x = mouseEvent.clientX - objectRect.left
@@ -113,12 +118,13 @@ class DragManager{
 }
 
 class Draggable{
-    constructor(element){
+    constructor(element, handle = element){
         this.element = element
+        this.handle = handle
         this.setupDrag()
     }
     setupDrag(){
-        this.element.addEventListener('mousedown', (e) => {
+        this.handle.addEventListener('mousedown', (e) => {
             drag_manager.startDrag(this, e)
         })
     }
@@ -128,57 +134,214 @@ class Draggable{
     }
 }
 
+class SettingManager{
+    constructor(){
+        this.settings = new Map
+        this.initDefSettings()
+    }
+    initDefSettings(){
+        const savedSettings = localStorage.getItem('appSettings')
+        if (savedSettings) {
+            try {
+                const parsedSettings = JSON.parse(savedSettings);
+                for (const key in parsedSettings) {
+                    this.settings.set(key, parsedSettings[key]);
+                }
+            } catch (e) {
+                console.error("Error parsing settings from localStorage", e);
+                this.setDefSettings();
+            }
+        } else {
+            this.setDefSettings();
+        }
+        this.applySettings()
+    }
+    setDefSettings(){
+        this.settings.set('showGrid', true)
+        this.settings.set('noteType', 'prompt')
+        this.settings.set('hideEverything', false)
+        this.settings.set('deletableItems', true)
+        this.settings.set('darkMode', true)
+    }
+    getSetting(key) {
+        return this.settings.get(key);
+    }
+    setSetting(key, value) {
+        this.settings.set(key, value);
+        this.saveSettings();
+        this.applySettings(); 
+    }
+    saveSettings() {
+        localStorage.setItem('appSettings', JSON.stringify(Object.fromEntries(this.settings)));
+    }
+    applySettings() {
+        const body = document.body;
+
+        if(this.getSetting('showGrid')) {
+            body.classList.remove('hide-grid');
+        }
+        else {
+            body.classList.add('hide-grid');
+        }
+
+        if(this.getSetting('noteType') === 'prompt'){
+            drag_factory.noteType = 'prompt'
+        }
+        else{
+            drag_factory.noteType = 'input'
+        }
+        console.log("Settings applied:", Object.fromEntries(this.settings));
+    }
+}
+
 class DragFactory{
+    constructor(){
+        this.noteType = 'input'
+    }
+    createElement(tag, options = {}) {
+
+        const element = document.createElement(tag);
+        
+        if (options.classes) {
+            if (Array.isArray(options.classes)) {
+                element.classList.add(...options.classes);
+            } else {
+                element.className = options.classes;
+            }
+        }
+
+        if (options.attributes) {
+            Object.entries(options.attributes).forEach(([key, value]) => {
+                element.setAttribute(key, value);
+            });
+        }
+        
+        if (options.properties) {
+            Object.entries(options.properties).forEach(([key, value]) => {
+                element[key] = value;
+            });
+        }
+        
+        if (options.text) element.textContent = options.text;
+        
+        if (options.events) {
+            Object.entries(options.events).forEach(([event, handler]) => {
+                element.addEventListener(event, handler);
+            });
+        }
+        
+        if (options.children) {
+            options.children.forEach(child => {
+                element.appendChild(child);
+            });
+        }
+        
+        return element; 
+    }
+    massChilren(target, childlist){
+        childlist.forEach(child => {
+            target.appendChild(child)
+        })
+    }
     createDraggable(buttonElement){
         return (event) => { 
             const type = buttonElement.dataset.type
             const color = buttonElement.dataset.color
 
-            const newDrag = document.createElement('div')
-            const newDragTopBar = document.createElement('div')
-            const dragName = document.createElement('span')
-            const dragDel = document.createElement('button')
-            const dragDelIcon = document.createElement('i')
-
-            dragDelIcon.classList = 'fa-solid fa-x drag-del-icon'
-            dragName.innerHTML = `${type} - ${color}`
-            dragName.classList.add('drag-name')
-            dragDel.classList.add('drag-del-button')
-            newDragTopBar.classList.add('drag-top-bar')
-
-            dragDel.appendChild(dragDelIcon)
-
-            dragDel.addEventListener('click', () => {
-                dragDel.parentElement.parentElement.remove()
+            const dragName = this.createElement('span', {
+                text: `${type} - ${color}`,
+                classes: ['drag-name']
             })
 
-            newDragTopBar.appendChild(dragName)
-            newDragTopBar.appendChild(dragDel)
-            newDrag.appendChild(newDragTopBar)
+            const dragDelIcon = this.createElement('i', {
+                classes: ['fa-solid', 'fa-x', 'drag-del-icon']
+            })
 
+            const dragDel = this.createElement('button', {
+                classes: 'drag-del-button',
+                events: {
+                    click: () => {
+                        newDrag.remove()
+                        if(type === 'settings'){
+                            buttonElement.disabled = false
+                        }
+                    }
+                },
+                children: [dragDelIcon]
+            })
 
-            newDrag.classList.add('draggable-item', `drag-${type}`, `${color}`) 
+            const newDragTopBar = this.createElement('div', {
+                classes: 'drag-top-bar',
+                children: [dragName, dragDel]
+            })
 
+            const dragContent = this.createElement('div')
+
+            if(type === 'settings'){
+
+                const settingList = this.createElement('ul', {
+                    classes: 'drag-setting-list'
+                })
+
+                const gridToggle = this.createElement('li', {
+                    classes: 'drag-setting-item'
+                })
+
+                const gridSpan = this.createElement('span', {
+                    text: 'Toggle grid'
+                })
+
+                const gridToggleButton = this.createElement('input', {
+                    attributes: {
+                        type: 'checkbox'
+                    },
+                    classes: 'grid-setting-switch',
+                    properties: {
+                        checked: setting_manager.getSetting('showGrid')
+                    },
+                    events: {
+                        change: (e) => {
+                            setting_manager.setSetting('showGrid', e.target.checked)
+                        }
+                    }
+                })
+                this.massChilren(gridToggle, [gridSpan, gridToggleButton])
+                dragContent.appendChild(settingList)
+                settingList.appendChild(gridToggle)
+                buttonElement.disabled = true
+            }
+
+            const newDrag = this.createElement('div', {
+                classes: ['draggable-item', `drag-${type}`, `${color}`],
+                children: [newDragTopBar, dragContent],
+            })
 
             document.body.appendChild(newDrag) 
-
-            this.makeDraggable(newDrag) 
+            this.makeDraggable(newDrag, newDragTopBar) 
         }
     }
-    makeDraggable(element){
+    makeDraggable(element, handle){
         element.style.position = 'absolute'
-        return new Draggable(element)
+        return new Draggable(element, handle)
     }
 }
 
+
 const drag_factory = new DragFactory()
+const setting_manager = new SettingManager()
+setting_manager.applySettings()
+
 const kit_tab_manager = new KitTabManager()
 const drag_manager = new DragManager()
+
 
 const clearAllButton = document.querySelector('.kit-clear-all')
 
 clearAllButton.addEventListener('click', () => {
     document.querySelectorAll('.draggable-item').forEach(dr_item => {
         dr_item.remove()
+        if(document.querySelector('[data-type="settings"]').disabled){
+            document.querySelector('[data-type="settings"]').disabled = false
+        }
     });
 })
