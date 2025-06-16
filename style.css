@@ -4,25 +4,29 @@
     --border-rad-def: 0.8rem;
     --border-rad-round: 3rem;
     --bg-color: #131518; 
-    --bg-grid-color: rgb(31, 31, 41);
+    --bg-grid-color: rgb(37, 37, 48);
     --kit-bg: rgb(45, 45, 51);
     --kit-button: rgb(76, 77, 85);
     --lookhere: rgb(116, 246, 255);
-    --accent-drag: rgb(30, 86, 122);
+    --accent-drag: rgb(35, 111, 158);
+    --shadow-light: rgba(116, 246, 255, 0.1);
+    --shadow-heavy: rgba(0, 0, 0, 0.6);
+    --shadow-inset: 0 0 3px black inset;
 }
 
 /* Globals */
 
 button{
     border: none;
+    cursor: pointer;
 }
 
 body{
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     min-height: 100vh;
     margin: 0;
     padding: 1em;
-    background-size: 50px 50px;
+    background-size: 70px 50px;
     background-color: var(--bg-color);
     background-image: 
         linear-gradient(to right, var(--bg-grid-color) 1px, transparent 1px),
@@ -58,20 +62,22 @@ body{
     gap: 1rem;
     margin-bottom: 15vh;
     width: clamp(30px, 8vw, 100px);
-    *{
-        transition-duration: 0.5s;
-    }
+}
+
+.kit-stuff-container *{
+    transition: 0.5s ease;
 }
 
 .kit-button-container{
     display: flex;
     align-items: center;
-    padding: 0.4em;
+    padding: 0.6em;
     flex-direction: column;
     height: clamp(100px, 60vh, 500px);
     width: clamp(30px, 8vw, 100px);
     border-radius: var(--border-rad-round);
-    background-color: var(--kit-bg);   
+    background: var(--kit-bg);
+    box-shadow: var(--shadow-inset);
 }
 
 /* buttons */
@@ -84,29 +90,36 @@ body{
     aspect-ratio: 1;
     padding: 0;
     background-color: var(--kit-bg);
-    width: 50%;
+    width: 60%;
     cursor: pointer;
-}
-
-.kit-hide-button:hover{
-    filter: invert();
+    box-shadow: var(--shadow-inset);
+    transition: 0.2s;
+    font-size: 1.5em;
 }
 
 .kit-hide-button i{
     text-align: center;
     color: white;
-    font-size: 2em;
 }
+
+.kit-hide-button:hover{
+    background-color: var(--lookhere);
+    scale: 1.05;
+}
+.kit-hide-button:hover i{
+    color: var(--bg-color);
+}
+
 .kit-clear-all{
     background-color: rgb(255, 69, 69);
     color: white;
-    font-size: 1.5em;
     position: relative;
 }
 
 .kit-clear-all:hover{
     background-color: #fff;
     color: rgb(255, 69, 69);
+    scale: 1.05;
 }
 
 
@@ -126,6 +139,8 @@ body{
 .kit-button:hover{
     background-color: var(--lookhere);
     color: var(--kit-button);
+    box-shadow: var(--shadow-inset);
+    transform: translateX(-3px);
 }
 .kit-button-container .gray:hover{
     background-color: #fff;
@@ -137,7 +152,7 @@ body{
 .kit-tab{
     display: grid;
     gap: 0.4em;
-    padding: 0.5rem;
+    padding: 0.8rem;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr;
     margin-top: 8.4em;
@@ -147,6 +162,8 @@ body{
     color: var(--lookhere);
     height: clamp(100px, 60vh, 500px);
     width: 100%;
+    box-shadow: var(--shadow-inset);
+    border: 2px solid var(--lookhere);
 }
 
 .kit-add-button{
@@ -157,6 +174,7 @@ body{
     font-size: 1.5em;
     font-weight: bold;
     color: var(--lookhere);
+    box-shadow: var(--shadow-inset);
 }
 
 .kit-add-button:hover{
@@ -165,8 +183,8 @@ body{
 }
 
 .kit-add-button[disabled]{
-    color: red;
-    background-color: #00000033;
+    color: #ff6b6b;
+    background: rgba(50, 0, 0, 0.3);
     cursor: not-allowed;
 }
 
@@ -174,12 +192,12 @@ body{
 
 .draggable-item{
     display: grid;
-    grid-template-rows: 2em auto;
+    grid-template-rows: 2.5em auto;
     background-color: var(--lookhere);
     border-radius: var(--border-rad-def);
     min-height: 10em;
     min-width: 15em;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4); 
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4), var(--shadow-inset); 
     transition: box-shadow 0.2s ease-in-out;
     user-select: none;
 }
@@ -187,7 +205,7 @@ body{
 .draggable-item.dragging {
     cursor: grabbing;
     z-index: 6969;
-    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.6);
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.6), var(--shadow-inset);
 }
 
 .drag-top-bar{
@@ -201,39 +219,48 @@ body{
     background-color: rgba(0, 0, 0, 0.420); 
     color: white;
     border-radius: var(--border-rad-def) var(--border-rad-def) 0 0;
+    font-weight: 500;
 }
 
 .drag-del-button{
     transition-duration: 0.3s;
     aspect-ratio: 1;
-    color: rgba(255, 255, 255, 0.712);
-    background-color: rgba(0, 0, 0, 0.37);
+    color: rgba(255, 255, 255, 0.8);
     padding: 0.2em;
     margin: auto 0;
-    height: 1.8em;
+    height: 2em;
     cursor: pointer;
     border-radius: var(--border-rad-round);
+    border: 2px solid var(--lookhere);
+    background-color: rgba(0, 0, 0, 0.514);
 }
-.drag-del-button:hover{
-    background-color: #00000063;
-    color: #ff3b3b;
-}
+
 .drag-del-button i{
+    color: var(--lookhere);
     aspect-ratio: 1;
     width: 100%;
+    font-size: 1.1em;
+}
+
+.drag-del-button:hover{
+    background-color: #ffffff;
+    border: 3px solid rgb(255, 255, 255);
+}
+.drag-del-button:hover i{
+    color: rgb(255, 0, 0);
 }
 
 /*type specific drag styles*/
 
 .drag-settings{
-    min-width: 15em;
-    min-height: 20em;
+    min-width: 16em;
+    min-height: 24em;
 }
 
 .drag-setting-list{
     list-style: none; 
     margin: 0;
-    padding: 1em; 
+    padding: 1.2em; 
     overflow-y: auto; 
 }
 
@@ -243,16 +270,24 @@ body{
     align-items: center; 
     margin-bottom: 0.8em; 
     padding-bottom: 0.8em; 
-    min-height: 1.8em;
-    border-bottom: 2px solid rgba(0, 0, 0, 0.384);
+    min-height: 2em;
+    background-color: #ffffff2f;
+    padding: 0.3em;
+    border-radius: var(--border-rad-def);
+    transition-duration: 0.2s;
+    box-shadow: 2px 3px 5px 2px rgba(0, 0, 0, 0.22);
+}
+
+.drag-setting-item:hover{
+    background-color: #ffffff52;
 }
 
 .radio-container{
-    padding: 0.5em 0;
+    padding: 0.3em 0 0.8em 0.5em;
     display: grid;
     grid-template-rows: auto auto;
     grid-template-columns: 1fr 1fr;
-    gap: 0.8em;
+    gap: 0.4em;
     align-items: center;
 }
 
@@ -265,9 +300,8 @@ body{
 
 .custom-radio {
     appearance: none;
-    width: 1.8em;
-    height: 1.8em;
-    border: 2px solid #666;
+    width: 2em;
+    height: 2em;
     border-radius: 50%;
     background: #fff;
     cursor: pointer;
@@ -276,27 +310,29 @@ body{
     justify-self: end;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+.custom-radio:hover{
+    background: var(--accent-drag);
+}
 
 .custom-radio:checked {
-    border-color: var(--lookhere);
     background: #fff;
+    box-shadow: var(--shadow-inset);
 }
 
 .custom-radio:checked::before {
     content: '';
     position: absolute;
-    width: 0.8em;
-    height: 0.8em;
-    background: rgb(46, 138, 180);
+    width: 1em;
+    height: 1em;
+    background: var(--accent-drag);
     border-radius: 50%;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .drag-setting-radio{
-    min-height: 4em;
+    min-height: 5em;
     display: grid;
     grid-template-rows: auto 1fr;
 }
@@ -305,14 +341,7 @@ body{
     font-weight: bold;
 }
 
-.drag-setting-item:last-child{
-    border-bottom: none;
-    margin-bottom: 0;
-    padding-bottom: 0;
-}
-
 .drag-setting-item > span{
-    color: white; 
     font-size: 1.4em;
     flex-grow: 1; 
     padding-right: 1em; 
@@ -321,7 +350,7 @@ body{
 .drag-setting-item .grid-setting-switch {
     appearance: none;
     width: 3.5em;
-    height: 1.8em;
+    height: 2em;
     background: #333;
     border-radius: 2em;
     cursor: pointer;
@@ -331,62 +360,134 @@ body{
 }
 
 .drag-setting-item .grid-setting-switch:checked {
-    background: rgb(60, 180, 24);
+    background: rgb(85, 207, 47);
 }
 
 .drag-setting-item .grid-setting-switch::before {
     content: '';
     position: absolute;
-    width: 1.4em;
-    height: 1.4em;
+    width: 1.5em;
+    height: 1.5em;
     background: white;
     border-radius: 50%;
-    top: 0.2em;
-    left: 0.2em;
+    top: 0.25em;
+    left: 0.15em;
     transition: transform 0.3s;
 }
 
 .drag-setting-item .grid-setting-switch:checked::before {
-    transform: translateX(1.7em);
+    transform: translateX(1.75em);
 }
 
 .drag-content-note{
+    min-height: 12em;
     min-width: 16em;
-    max-width: 30em;
+    max-width: 32em;
     display: grid;
-    grid-template-rows: auto 2em;
+    grid-template-rows: auto 3em;
 }
+
+.note-list{
+    list-style: none;
+    margin: 0;
+    padding: 0.4em 1em;
+    max-height: 12em;
+    overflow-y: auto;
+}
+
+.note-list-item{
+    border-radius: var(--border-rad-def);
+    padding: 0.4em 0.5em;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.548) inset;
+    background-color: #00000023;
+    margin-bottom: 0.5em;
+    font-size: 1em;
+    transition-duration: 0.3s;
+}
+
+.note-list-item:hover{
+    color: white;
+    background-color: #00000071;
+    box-shadow: 0 0 2px rgba(255, 255, 255, 0.548) inset;
+}
+.note-input-item{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--border-rad-def);
+    margin-bottom: 0.3em;
+    padding: 0.4em 0.5em;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.548) inset;
+    background-color: #00000023;
+}
+.note-input{
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 0.3em 0.4em;
+    color: rgba(0, 0, 0, 0.8);
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+.note-input:focus{
+    outline: none;
+    border-color: var(--accent-drag);
+}
+
+.note-input-confirm{
+    background: var(--accent-drag);
+    color: white;
+    border-radius: 8px;
+    padding: 0.45em;
+    margin-left: 0em;
+    transition: all 0.2s ease;
+}
+
+.note-input-confirm:hover{
+    background: hsl(206, 100%, 94%);
+    color: var(--accent-drag);
+}
+
+
 .drag-content-note div{
     display: flex;
-    padding: 0 0.4em;
+    padding: 0.2em 0.4em;
     align-items: center;
     justify-content: space-between;
+    gap: 0.5em;
+    background-color: #00000044;
+    border-radius: var(--border-rad-def);
 }
 .note-button{
-    height: 80%;
-    width: 40%;
+    height: 85%;
+    width: 45%;
     border-radius: var(--border-rad-def);
-    transition: 0.3s;
+    transition: all 0.2s ease;
+    font-weight: bold;
 }
 
 .note-add-button{
-    background-color: green;
+    background: #28a745;
     color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .note-add-button:hover{
-    color: green;
-    background-color: #fff;
+    background: #fff;
+    color: #28a745;
+    transform: translateY(-2px);
 }
 
 .note-del-button{
-    background-color: rgb(255, 69, 69);
+    background: #dc3545;
     color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .note-del-button:hover{
-    background-color: white;
-    color: rgb(255, 69, 69);
+    background: #fff;
+    color: #dc3545;
+    transform: translateY(-2px);
 }
 
 /* --- Custom prompt stuff --- */
@@ -394,14 +495,14 @@ body{
 .custom-prompt-container{
     z-index: 10000;
     position: fixed;
-    max-width: 400px;
-    min-width: 300px;
+    max-width: 450px;
+    min-width: 350px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: var(--kit-bg);
     border-radius: var(--border-rad-def);
-    padding: 1.5em;
+    padding: 2em;
     box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.6);
     display: flex;
     flex-direction: column;
@@ -415,12 +516,12 @@ body{
     height: 100%;
     inset: 0;
     background-color: #00000073;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(3px);
 }
 .custom-prompt-header{
     color: var(--lookhere);
-    text-align: center;
-    font-size: 1.8em;
+    text-align: left;
+    font-size: 2.5em;
     margin-bottom: 0;
 }
 .custom-prompt-input-container{
@@ -430,7 +531,7 @@ body{
 }
 .custom-prompt-input-message{
     color: white;
-    font-size: 1em;
+    font-size: 1.3em;
     margin: 0;
 }
 .custom-prompt-input{
