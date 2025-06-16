@@ -410,7 +410,7 @@ class DragFactory{
                                 }
                             }
                             else{
-                                noteList.appendChild(this.createElement('li', {
+                                const newNoteInput = this.createElement('li', {
                                     classes: 'note-input-item',
                                     children: [
                                         this.createElement('input', {
@@ -441,9 +441,8 @@ class DragFactory{
                                             ],
                                             events: {
                                                 click: () => {
-                                                    const nii = noteList.querySelectorAll('.note-input-item')                                            
-                                                    const result = nii[nii.length -1].querySelector('input').value
-                                                    nii[nii.length -1].remove()
+                                                    const result = newNoteInput.querySelector('.note-input').value
+                                                    newNoteInput.remove();
                                                     noteList.appendChild(this.createElement('li', {
                                                         classes: ['note-list-item'],
                                                         text: result
@@ -452,7 +451,8 @@ class DragFactory{
                                             }
                                         })
                                     ]
-                                }))
+                                })
+                                noteList.appendChild(newNoteInput)
                             }
                         }
                     },
