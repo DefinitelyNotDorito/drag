@@ -274,14 +274,14 @@ class DragFactory{
             })
 
             // top bar with name and delete button
-            const newDragTopBar = this.createElement('div', {
+            const dragTopBar = this.createElement('div', {
                 classes: 'drag-top-bar',
                 children: [dragName, dragDel]
             })
 
             // main content area
             const dragContent = this.createElement('div', {
-                classes: ['drag-content']
+                classes: ['drag-content', `drag-content-${type}`]
             })
 
             if(type === 'settings'){
@@ -389,39 +389,98 @@ class DragFactory{
                 buttonElement.disabled = true
             }
             else if(type === 'note'){
-                let noteTextElement = null
-                let noteText = ''
-                switch(setting_manager.getSetting('noteType')){
-                    case 'prompt':
-                        noteText = prompt('Your note:')
-                        //element with entered text
-                        noteTextElement = this.createElement('p', { 
-                            classList: 'drag-note-text',
-                            text: noteText
-                        })
-                        dragContent.appendChild(noteTextElement)
-                        break
-                }
-                newDragTopBar.appendChild(this.createElement('button', {
-                    classes: 'drag-edit-button',
+
+                const noteList = this.createElement('ul', {
+                    classes: ['note-list']
+                })
+                const noteButton = this.createElement('button', {
+                    classes: ['note-add-button', 'note-button'],
                     events: {
-                        click: () => {
-                            this.editNote(noteTextElement)
+                        click: async () => {
+                            if(setting_manager.getSetting('noteType') === 'prompt'){
+                                try{
+                                    noteList.appendChild(this.createElement('li', {
+                                        classes: ['note-list-item'],
+                                        text: await this.makeCustomPrompt('Enter new note: ', 'NOTES', 'dont be shy...', 32)
+                                    }))
+
+                                }
+                                catch(error){
+                                    console.error(error)
+                                }
+                            }
+                            else{
+                                noteList.appendChild(this.createElement('li', {
+                                    children: [
+                                        this.createElement('input', {
+                                            attributes: {
+                                                type: 'text',
+                                                placeholder: 'enter note...'
+                                            },
+                                            classes: ['note-input'],
+                                            events: { 
+                                                keydown: (e) => { 
+                                                    if(e.key === 'Enter'){ 
+                                                        const result = e.target.value
+                                                        e.target.parentElement.remove()
+                                                        noteList.appendChild(this.createElement('li', {
+                                                            classes: ['note-list-item'],
+                                                            text: result
+                                                        }))
+                                                    }
+                                                }
+                                            }
+                                        }),
+                                        this.createElement('button', {
+                                            classes: ['note-input-confirm'],
+                                            children: [
+                                                this.createElement('i', {
+                                                    classes: ['fa-solid', 'fa-check']
+                                                })
+                                            ],
+                                            events: {
+                                                click: (e) => {
+                                                    const result = e.target.parentElement.parentElement.querySelector('.note-input').value
+                                                    e.target.parentElement.remove()
+                                                    noteList.appendChild(this.createElement('li', {
+                                                        classes: ['note-list-item'],
+                                                        text: result
+                                                    }))
+                                                }
+                                            }
+                                        })
+                                    ]
+                                }))
+                            }
                         }
                     },
-                    children: [this.createElement('i', {
-                        classes: ['fa-solid', 'fa-pen', 'drag-edit-icon']
-                    })]
-                }))
+                    text: 'New note'
+                })
+                const noteDelButton = this.createElement('button', {
+                    classes: ['note-del-button', 'note-button'],
+                    text: 'Delete last',
+                    events: {
+                        click: () => {
+                            let notes = noteList.querySelectorAll('.note-list-item')
+                            console.log(notes, notes.length)
+                            if(notes.length > 0){
+                                notes[notes.length - 1].remove()
+                            }
+                        }
+                    }
+                })
+                this.massChilren(dragContent, [noteList, this.createElement('div', {
+                    children: [noteButton, noteDelButton]
+                })])
             }
 
             const newDrag = this.createElement('div', {
                 classes: ['draggable-item', `drag-${type}`, `${color}`],
-                children: [newDragTopBar, dragContent],
+                children: [dragTopBar, dragContent],
             })
 
             document.body.appendChild(newDrag) 
-            this.makeDraggable(newDrag, newDragTopBar) 
+            this.makeDraggable(newDrag, dragTopBar) 
         }
     }
     makeDraggable(element, handle){
@@ -429,12 +488,76 @@ class DragFactory{
         return new Draggable(element, handle)
     }
     editNote(element){
-        if(setting_manager.getSetting('noteType') === 'prompt'){
-            element.textContent = prompt('New note:')
-        }
-        else{
-            console.log('todo')
-        }
+        //TODO
+    }
+
+    //makes custom prompts to get user input
+    makeCustomPrompt(message = '', title = '', plcholder = '', maxlen = null){
+
+        // return promise
+        return new Promise((resolve) => { 
+            let result = ''; // Initialize result to ''
+
+            //custom prompt container
+            const barrier = this.createElement('div', {classes: 'barrier'}); 
+            const customPrompt = this.createElement('div',{ 
+                classes: ['custom-prompt-container'], 
+                children: [ 
+                    //prompt header
+                    this.createElement('h2', { 
+                        classes: 'custom-prompt-header', 
+                        text: title 
+                    }),
+                    //div that contains the input, message and buttons
+                    this.createElement('div', { 
+                        classes: 'custom-prompt-input-container', 
+                        children: [ //
+                            //input message thing
+                            this.createElement('h3', {  
+                                classes: 'custom-prompt-input-message', 
+                                text: message 
+                            }),
+                            //tinput itself
+                            this.createElement('input', { 
+                                attributes: { 
+                                    type: 'text', 
+                                    placeholder: plcholder 
+                                },
+                                classes: 'custom-prompt-input', 
+                                events: { 
+                                    keydown: (e) => { 
+                                        if(e.key === 'Enter'){ 
+                                            result = e.target.value
+                                            customPrompt.remove(); 
+                                            barrier.remove();
+                                            resolve(result); 
+                                        }
+                                    }
+                                }
+                            }),
+                            this.createElement('button', { 
+                                classes: 'custom-prompt-confirm-button', 
+                                text: 'Confirm', 
+                                events: { 
+                                    click: (e) => { 
+                                        const inputElement = e.target.parentElement.querySelector('.custom-prompt-input'); 
+                                        result = inputElement.value;
+                                        customPrompt.remove(); 
+                                        barrier.remove(); 
+                                        resolve(result); 
+                                    }
+                                }
+                            })
+                        ]
+                    })
+                ]
+
+            })
+            if(maxlen && maxlen > 0){
+                customPrompt.querySelector('.custom-prompt-input').maxLength = maxlen; 
+            }
+            this.massChilren(document.body, [barrier, customPrompt]); 
+        }); 
     }
 }
 

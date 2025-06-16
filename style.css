@@ -350,6 +350,115 @@ body{
     transform: translateX(1.7em);
 }
 
+.drag-content-note{
+    min-width: 16em;
+    max-width: 30em;
+    display: grid;
+    grid-template-rows: auto 2em;
+}
+.drag-content-note div{
+    display: flex;
+    padding: 0 0.4em;
+    align-items: center;
+    justify-content: space-between;
+}
+.note-button{
+    height: 80%;
+    width: 40%;
+    border-radius: var(--border-rad-def);
+    transition: 0.3s;
+}
+
+.note-add-button{
+    background-color: green;
+    color: white;
+}
+
+.note-add-button:hover{
+    color: green;
+    background-color: #fff;
+}
+
+.note-del-button{
+    background-color: rgb(255, 69, 69);
+    color: white;
+}
+
+.note-del-button:hover{
+    background-color: white;
+    color: rgb(255, 69, 69);
+}
+
+/* --- Custom prompt stuff --- */
+
+.custom-prompt-container{
+    z-index: 10000;
+    position: fixed;
+    max-width: 400px;
+    min-width: 300px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--kit-bg);
+    border-radius: var(--border-rad-def);
+    padding: 1.5em;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+    color: white;
+}
+.barrier{
+    z-index: 9999;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    inset: 0;
+    background-color: #00000073;
+    backdrop-filter: blur(5px);
+}
+.custom-prompt-header{
+    color: var(--lookhere);
+    text-align: center;
+    font-size: 1.8em;
+    margin-bottom: 0;
+}
+.custom-prompt-input-container{
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+.custom-prompt-input-message{
+    color: white;
+    font-size: 1em;
+    margin: 0;
+}
+.custom-prompt-input{
+    padding: 0.8em 1em;
+    border: 1px solid var(--kit-button);
+    border-radius: var(--border-rad-def);
+    background-color: var(--kit-button);
+    color: white;
+    font-size: 1em;
+    width: 100%;
+}
+.custom-prompt-input::placeholder{
+    color: rgba(255, 255, 255, 0.6);
+}
+.custom-prompt-confirm-button{
+    padding: 0.8em 1.5em;
+    background-color: var(--lookhere);
+    color: var(--kit-button);
+    border-radius: var(--border-rad-def);
+    transition: background-color 0.2s ease, color 0.2s ease;
+    align-self: flex-end;
+    font-weight: bold;
+}
+.custom-prompt-confirm-button:hover{
+    background-color: var(--kit-button);
+    color: var(--lookhere);
+}
+
 /* --- Special styles --- */
 
 .kit-top{
@@ -383,3 +492,4 @@ body{
     --lookhere: rgb(92, 92, 92);
     color: white;
 }
+
