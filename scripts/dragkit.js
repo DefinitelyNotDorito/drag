@@ -248,15 +248,18 @@ class DragFactory{
             const type = buttonElement.dataset.type
             const color = buttonElement.dataset.color
 
+            // draggable name
             const dragName = this.createElement('span', {
                 text: `${type} - ${color}`,
                 classes: ['drag-name']
             })
 
+            // x icon 
             const dragDelIcon = this.createElement('i', {
                 classes: ['fa-solid', 'fa-x', 'drag-del-icon']
             })
 
+            // delete button
             const dragDel = this.createElement('button', {
                 classes: 'drag-del-button',
                 events: {
@@ -270,45 +273,146 @@ class DragFactory{
                 children: [dragDelIcon]
             })
 
+            // top bar with name and delete button
             const newDragTopBar = this.createElement('div', {
                 classes: 'drag-top-bar',
                 children: [dragName, dragDel]
             })
 
-            const dragContent = this.createElement('div')
+            // main content area
+            const dragContent = this.createElement('div', {
+                classes: ['drag-content']
+            })
 
             if(type === 'settings'){
 
+                // main settings list container
                 const settingList = this.createElement('ul', {
                     classes: 'drag-setting-list'
                 })
 
+                // grid toggle setting
                 const gridToggle = this.createElement('li', {
-                    classes: 'drag-setting-item'
+                    classes: 'drag-setting-item',
+                    children: [
+                        // label for grid toggle
+                        this.createElement('span', {
+                            text: 'Toggle grid'
+                        }),
+
+                        // actual toggle switch
+                        this.createElement('input', {
+                            attributes: {
+                                type: 'checkbox'
+                            },
+                            classes: 'grid-setting-switch',
+                            properties: {
+                                checked: setting_manager.getSetting('showGrid')
+                            },
+                            events: {
+                                change: (e) => {
+                                    setting_manager.setSetting('showGrid', e.target.checked)
+                                }
+                            }
+                        })
+                    ]
                 })
 
-                const gridSpan = this.createElement('span', {
-                    text: 'Toggle grid'
+                // note type radio button setting
+                const noteToggle = this.createElement('li', {
+                    classes: ['drag-setting-item', 'drag-setting-radio'],
+                    children: [
+                        // setting title
+                        this.createElement('span', {
+                            text: 'Note input type:'
+                        }),
+                        // radio button container
+                        this.createElement('div', {
+                            classes: 'radio-container',
+                            children: [
+                                // input radio label
+                                this.createElement('label', {
+                                    text: 'Input',
+                                    classes: 'radio-label'
+                                }),
+                                // input radio button
+                                this.createElement('input', {
+                                    attributes: {
+                                        type: 'radio',
+                                        name: 'noteType',
+                                        value: 'input'
+                                    },
+                                    classes: 'custom-radio',
+                                    properties: {
+                                        checked: setting_manager.getSetting('noteType') === 'input'
+                                    },
+                                    events:  {
+                                        change: (e) => {
+                                            if(e.target.checked){
+                                                setting_manager.setSetting('noteType', 'input')
+                                            }
+                                        }
+                                    } 
+                                }),
+                                // prompt radio label
+                                this.createElement('label', {
+                                    text: 'Prompt',
+                                    classes: 'radio-label'
+                                }),
+                                // prompt radio button
+                                this.createElement('input', {
+                                    attributes: {
+                                        type: 'radio',
+                                        name: 'noteType',
+                                        value: 'prompt'
+                                    },
+                                    classes: 'custom-radio',
+                                    properties: {
+                                        checked: setting_manager.getSetting('noteType') === 'prompt'
+                                    },
+                                    events:  {
+                                        change: (e) => {
+                                            if(e.target.checked){
+                                                setting_manager.setSetting('noteType', 'prompt')
+                                            }
+                                        }
+                                    } 
+                                })                                
+                            ]
+                        })
+                    ]
                 })
 
-                const gridToggleButton = this.createElement('input', {
-                    attributes: {
-                        type: 'checkbox'
-                    },
-                    classes: 'grid-setting-switch',
-                    properties: {
-                        checked: setting_manager.getSetting('showGrid')
-                    },
-                    events: {
-                        change: (e) => {
-                            setting_manager.setSetting('showGrid', e.target.checked)
-                        }
-                    }
-                })
-                this.massChilren(gridToggle, [gridSpan, gridToggleButton])
+                //adds all options to setting list
+                this.massChilren(settingList, [gridToggle, noteToggle])
                 dragContent.appendChild(settingList)
-                settingList.appendChild(gridToggle)
                 buttonElement.disabled = true
+            }
+            else if(type === 'note'){
+                let noteTextElement = null
+                let noteText = ''
+                switch(setting_manager.getSetting('noteType')){
+                    case 'prompt':
+                        noteText = prompt('Your note:')
+                        //element with entered text
+                        noteTextElement = this.createElement('p', { 
+                            classList: 'drag-note-text',
+                            text: noteText
+                        })
+                        dragContent.appendChild(noteTextElement)
+                        break
+                }
+                newDragTopBar.appendChild(this.createElement('button', {
+                    classes: 'drag-edit-button',
+                    events: {
+                        click: () => {
+                            this.editNote(noteTextElement)
+                        }
+                    },
+                    children: [this.createElement('i', {
+                        classes: ['fa-solid', 'fa-pen', 'drag-edit-icon']
+                    })]
+                }))
             }
 
             const newDrag = this.createElement('div', {
@@ -323,6 +427,14 @@ class DragFactory{
     makeDraggable(element, handle){
         element.style.position = 'absolute'
         return new Draggable(element, handle)
+    }
+    editNote(element){
+        if(setting_manager.getSetting('noteType') === 'prompt'){
+            element.textContent = prompt('New note:')
+        }
+        else{
+            console.log('todo')
+        }
     }
 }
 

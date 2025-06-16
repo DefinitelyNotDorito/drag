@@ -247,6 +247,64 @@ body{
     border-bottom: 2px solid rgba(0, 0, 0, 0.384);
 }
 
+.radio-container{
+    padding: 0.5em 0;
+    display: grid;
+    grid-template-rows: auto auto;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8em;
+    align-items: center;
+}
+
+.radio-label {
+    font-size: 1.4em;
+    color: white;
+    cursor: pointer;
+    justify-self: start; 
+}
+
+.custom-radio {
+    appearance: none;
+    width: 1.8em;
+    height: 1.8em;
+    border: 2px solid #666;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+    justify-self: end;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.custom-radio:checked {
+    border-color: var(--lookhere);
+    background: #fff;
+}
+
+.custom-radio:checked::before {
+    content: '';
+    position: absolute;
+    width: 0.8em;
+    height: 0.8em;
+    background: rgb(46, 138, 180);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.drag-setting-radio{
+    min-height: 4em;
+    display: grid;
+    grid-template-rows: auto 1fr;
+}
+
+.drag-setting-radio > span{
+    font-weight: bold;
+}
+
 .drag-setting-item:last-child{
     border-bottom: none;
     margin-bottom: 0;
@@ -268,7 +326,7 @@ body{
     border-radius: 2em;
     cursor: pointer;
     position: relative;
-    transition: background 0.3s;
+    transition: 0.3s;
     flex-shrink: 0;
 }
 
