@@ -243,6 +243,38 @@ class DragFactory{
             target.appendChild(child)
         })
     }
+    createDropdown(label, options, currentValue, events){
+
+        const dropdownLabel = this.createElement('label', {
+            text: label,
+            classes: ['dropdown-label']
+        })
+        
+        const selectElement = this.createElement('select', {
+            classes: ['custom-dropdown'],
+            events: events
+        });
+
+        options.forEach(option => {
+            const optionElement =  this.createElement('option', {
+                attributes: {
+                    value: option.value
+                },
+                text: option.text,
+                properties: {
+                    selected: option.value === currentValue
+                }
+            })
+            selectElement.appendChild(optionElement)
+        });
+
+        const dropdownContainer = this.createElement('div', {
+            classes: ['dropdown-container'],
+            children: [dropdownLabel, selectElement]
+        })
+
+        return dropdownContainer
+    }
     createDraggable(buttonElement){
         return (event) => { 
             const type = buttonElement.dataset.type
@@ -261,7 +293,7 @@ class DragFactory{
 
             // delete button
             const dragDel = this.createElement('button', {
-                classes: 'drag-del-button',
+                classes: ['drag-del-button', 'drag-top-button'],
                 events: {
                     click: () => {
                         newDrag.remove()
@@ -272,11 +304,14 @@ class DragFactory{
                 },
                 children: [dragDelIcon]
             })
-
-            // top bar with name and delete button
+            const topBarButtons = this.createElement('div', {
+                classes: ['drag-top-bar-buttons'],
+                children: [dragDel]
+            }) 
+            // top bar with name and buttons
             const dragTopBar = this.createElement('div', {
                 classes: 'drag-top-bar',
-                children: [dragName, dragDel]
+                children: [dragName, topBarButtons]
             })
 
             // main content area
@@ -390,17 +425,58 @@ class DragFactory{
             }
             else if(type === 'note'){
 
+                const noteColors = [
+                    { text: 'Green', value: 'green' },
+                    { text: 'Blue', value: 'blue' },
+                    { text: 'Red', value: 'red' },
+                    { text: 'Yellow', value: 'yellow' },
+                    { text: 'Purple', value: 'purple'},
+                    { text: 'Gray', value: 'gray'},
+                    { text: 'D. Green', value: 'dark-green'}
+                ];
+
+                const colorClasses = noteColors.map(color => color.value)
+
+                const noteSettingsTab = this.createElement('div', {
+                    classes: ['hidden', 'note-settings-tab'],
+                    children: [
+                        this.createDropdown('Note Color:', noteColors, color,
+                        {
+                            change: (e) => {
+                                colorClasses.forEach(cls => newDrag.classList.remove(cls))
+                                newDrag.classList.add(e.target.value)
+                                dragName.textContent = `note - ${e.target.value}`
+                            }
+                        })
+                    ]
+                })
+                const noteSettingButton = this.createElement('button', {
+                    classes: ['drag-settings-button', 'drag-top-button'],
+                    children: [
+                        this.createElement('i', {
+                            classes: ['fa-solid', 'fa-gear']
+                        }),
+                    ],
+                    events: {
+                        click: () => {
+                            noteSettingsTab.classList.toggle('hidden')
+                        }
+                    }
+                })
+
+                topBarButtons.appendChild(noteSettingButton)
+
                 const noteList = this.createElement('ul', {
                     classes: ['note-list']
                 })
                 const noteButton = this.createElement('button', {
-                    classes: ['note-add-button', 'note-button'],
+                    classes: ['note-add-button', 'note-button', 'wide'],
                     events: {
                         click: async () => {
                             if(setting_manager.getSetting('noteType') === 'prompt'){
                                 try{
                                     noteList.appendChild(this.createElement('li', {
-                                        classes: ['note-list-item'],
+                                        classes: ['note-list-item', 'note-list-thing'],
                                         text: await this.makeCustomPrompt('Enter new note: ', 'NOTES', 'dont be shy...', 32)
                                     }))
 
@@ -411,7 +487,7 @@ class DragFactory{
                             }
                             else{
                                 const newNoteInput = this.createElement('li', {
-                                    classes: 'note-input-item',
+                                    classes: ['note-input-item', 'note-list-thing'],
                                     children: [
                                         this.createElement('input', {
                                             attributes: {
@@ -425,7 +501,7 @@ class DragFactory{
                                                         const result = e.target.value
                                                         e.target.parentElement.remove()
                                                         noteList.appendChild(this.createElement('li', {
-                                                            classes: ['note-list-item'],
+                                                            classes: ['note-list-item', 'note-list-thing'],
                                                             text: result
                                                         }))
                                                     }
@@ -444,7 +520,7 @@ class DragFactory{
                                                     const result = newNoteInput.querySelector('.note-input').value
                                                     newNoteInput.remove();
                                                     noteList.appendChild(this.createElement('li', {
-                                                        classes: ['note-list-item'],
+                                                        classes: ['note-list-item', 'note-list-thing'],
                                                         text: result
                                                     }))
                                                 }
@@ -454,28 +530,48 @@ class DragFactory{
                                 })
                                 noteList.appendChild(newNoteInput)
                             }
+                            if(noteList.querySelectorAll('.note-list-thing').length === 0){
+                                noteButton.classList.add('wide')
+                                noteDelButton.classList.add('tiny')
+                            }
+                            else{
+                                noteDelButton.classList.remove('hidden')
+                                noteButton.classList.remove('wide')
+                                setTimeout(() => {
+                                    noteDelButton.classList.remove('tiny')
+                                }, 50);
+                            }
                         }
                     },
                     text: 'New note'
                 })
                 const noteDelButton = this.createElement('button', {
-                    classes: ['note-del-button', 'note-button'],
+                    classes: ['note-del-button', 'note-button', 'hidden', 'tiny'],
                     text: 'Delete last',
                     events: {
                         click: () => {
-                            let notes = noteList.querySelectorAll('.note-list-item')
+                            let notes = noteList.querySelectorAll('.note-list-thing')
+                            let notenum = notes.length
                             console.log(notes, notes.length)
                             if(notes.length > 0){
-                                notes[notes.length - 1].remove()
+                                notes[notenum - 1].remove()
+                                notenum -= 1
+                            }
+                            if(notenum === 0){
+                                noteDelButton.classList.add('tiny')
+                                noteButton.classList.add('wide')
+                                setTimeout(() => {
+                                    noteDelButton.classList.add('hidden')
+                                }, 1);
                             }
                         }
                     }
                 })
                 this.massChilren(dragContent, [noteList, this.createElement('div', {
+                    classes: ['button-holder-div-thingie'],
                     children: [noteButton, noteDelButton]
-                })])
+                }), noteSettingsTab])
             }
-
             const newDrag = this.createElement('div', {
                 classes: ['draggable-item', `drag-${type}`, `${color}`],
                 children: [dragTopBar, dragContent],
@@ -492,7 +588,6 @@ class DragFactory{
     editNote(element){
         //TODO
     }
-
     //makes custom prompts to get user input
     makeCustomPrompt(message = '', title = '', plcholder = '', maxlen = null){
 
@@ -519,7 +614,7 @@ class DragFactory{
                                 classes: 'custom-prompt-input-message', 
                                 text: message 
                             }),
-                            //tinput itself
+                            //input itself
                             this.createElement('input', { 
                                 attributes: { 
                                     type: 'text', 
