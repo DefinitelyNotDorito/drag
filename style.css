@@ -195,7 +195,6 @@ body{
     grid-template-rows: 2.5em auto;
     background-color: var(--lookhere);
     border-radius: var(--border-rad-def);
-    min-height: 10em;
     min-width: 15em;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4), var(--shadow-inset); 
     transition: box-shadow 0.2s ease-in-out;
@@ -226,7 +225,8 @@ body{
 
 .drag-top-bar-buttons{
     display: flex;
-    gap: 0.8em;
+    gap: 0.3em;
+    margin-left: 2em;
 }
 
 .drag-top-button{
@@ -275,13 +275,26 @@ body{
     color: rgb(0, 0, 0);
 }
 
+.drag-content.collapsed {
+    display: none;
+}
+
+.drag-collapse-button {
+    background-color: #55555550;
+}
+
+.drag-collapse-button i {
+    color: #ffffff;
+    transition: transform 0.3s ease;
+}
+
+
 /* -- type specific drag styles -- */
 
 /* settings */
 
 .drag-settings{
     min-width: 16em;
-    min-height: 24em;
 }
 
 .drag-setting-list{
@@ -479,7 +492,7 @@ body{
     color: var(--accent-drag);
 }
 
-.note-settings-tab{
+.drag-settings-tab{
     min-width: 10em;
     padding: 0.5em;
     min-height: 10em;
@@ -487,11 +500,10 @@ body{
     background-color: #313131;
     box-shadow: var(--shadow-inset);
     position: absolute;
-    top: -75%;
+    top: -11em;
     left: 35%;
     z-index: 2;
 }
-
 
 .dropdown-container{
     display: flex;
@@ -562,6 +574,12 @@ body{
     background: #fff;
     color: #dc3545;
     transform: translateY(-2px);
+}
+
+/* timer stuff */
+
+.drag-timer .drag-content{
+    min-height: 10em;
 }
 
 /* --- Custom prompt stuff --- */

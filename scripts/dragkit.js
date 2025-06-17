@@ -279,6 +279,7 @@ class DragFactory{
         return (event) => { 
             const type = buttonElement.dataset.type
             const color = buttonElement.dataset.color
+            let settingsTab = null
 
             // draggable name
             const dragName = this.createElement('span', {
@@ -318,6 +319,25 @@ class DragFactory{
             const dragContent = this.createElement('div', {
                 classes: ['drag-content', `drag-content-${type}`]
             })
+
+            const collapseButton = this.createElement('button', {
+                    classes: ['drag-collapse-button', 'drag-top-button'],
+                    children: [
+                        this.createElement('i', {
+                            classes: ['fa-solid', 'fa-chevron-up', 'collapse-icon']
+                        })
+                    ],
+                    events: {
+                        click: () => {
+                            const content = newDrag.querySelector('.drag-content');
+                            const icon = collapseButton.querySelector('.collapse-icon');
+                            
+                            content.classList.toggle('collapsed');
+                            icon.classList.toggle('fa-chevron-up');
+                            icon.classList.toggle('fa-chevron-down');
+                        }
+                    }
+                });
 
             if(type === 'settings'){
 
@@ -437,8 +457,8 @@ class DragFactory{
 
                 const colorClasses = noteColors.map(color => color.value)
 
-                const noteSettingsTab = this.createElement('div', {
-                    classes: ['hidden', 'note-settings-tab'],
+                settingsTab = this.createElement('div', {
+                    classes: ['hidden', 'drag-settings-tab'],
                     children: [
                         this.createDropdown('Note Color:', noteColors, color,
                         {
@@ -459,11 +479,11 @@ class DragFactory{
                     ],
                     events: {
                         click: () => {
-                            noteSettingsTab.classList.toggle('hidden')
+                            settingsTab.classList.toggle('hidden')
                         }
                     }
                 })
-
+            
                 topBarButtons.appendChild(noteSettingButton)
 
                 const noteList = this.createElement('ul', {
@@ -570,12 +590,18 @@ class DragFactory{
                 this.massChilren(dragContent, [noteList, this.createElement('div', {
                     classes: ['button-holder-div-thingie'],
                     children: [noteButton, noteDelButton]
-                }), noteSettingsTab])
+                })])
             }
+            
+            topBarButtons.appendChild(collapseButton)
             const newDrag = this.createElement('div', {
                 classes: ['draggable-item', `drag-${type}`, `${color}`],
                 children: [dragTopBar, dragContent],
             })
+
+            if(settingsTab){
+                newDrag.appendChild(settingsTab)
+            }
 
             document.body.appendChild(newDrag) 
             this.makeDraggable(newDrag, dragTopBar) 
