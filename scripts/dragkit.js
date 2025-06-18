@@ -512,7 +512,8 @@ class DragFactory{
                                         this.createElement('input', {
                                             attributes: {
                                                 type: 'text',
-                                                placeholder: 'enter note...'
+                                                placeholder: 'enter note...',
+                                                maxlength: 64   
                                             },
                                             classes: ['note-input'],
                                             events: { 
@@ -651,7 +652,7 @@ class DragFactory{
                             this.createElement('input', { 
                                 attributes: { 
                                     type: 'text', 
-                                    placeholder: plcholder 
+                                    placeholder: plcholder,
                                 },
                                 classes: 'custom-prompt-input', 
                                 events: { 
@@ -691,11 +692,14 @@ class DragFactory{
     }
     noteEdit(element){
         const notetext = element.textContent
+        
+        const mirror = document.querySelector('.input-mirror');
 
         const input = this.createElement('input', {
             attributes: {
                 type: 'text',
-                value: notetext
+                value: notetext,
+                maxlength: 80
             },
             classes: ['note-edit-input'],
             events: {
@@ -708,13 +712,21 @@ class DragFactory{
                 blur: () => {
                     element.textContent = input.value;
                     element.classList.remove('editing');
-                }
+                },
+                input: () => this.resizeTheStupidInput(input, mirror)
             }
         })
         element.textContent = '';
         element.appendChild(input);
         element.classList.add('editing');
         input.focus();
+        this.resizeTheStupidInput(input, mirror)
+    }
+    resizeTheStupidInput(input, mirror){
+        const style = window.getComputedStyle(input);
+        const padding = parseFloat(style.paddingLeft) + parseFloat(style.paddingRight);
+        mirror.textContent = input.value || ' ';
+        input.style.width = mirror.offsetWidth + padding + 10 + 'px';
     }
 }
 

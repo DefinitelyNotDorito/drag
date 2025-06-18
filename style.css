@@ -301,7 +301,7 @@ body{
     list-style: none; 
     margin: 0;
     padding: 1.2em; 
-    overflow-y: auto; 
+    overflow-x: scroll;
 }
 
 .drag-setting-item{
@@ -449,6 +449,8 @@ body{
     font-size: 1em;
     min-height: 1.8em;
     transition: all 0.3s ease-in-out, padding 0s;
+    word-break: break-word;
+    overflow-wrap: anywhere;
 }
 
 .note-list-item:hover{
@@ -502,6 +504,7 @@ body{
 
 .note-edit-input {
     min-width: 100%;
+    max-width: 100%;
     background: rgba(0, 0, 0, 0.2);
     outline: 2px solid var(--lookhere);
     border-radius: var(--border-rad-def);
@@ -725,4 +728,10 @@ body{
     width: 100%;
 }
 
-
+.input-mirror{
+    position: absolute;
+    visibility: hidden;
+    white-space: pre;
+    font-size: 1em;
+    font-family: inherit;
+}
