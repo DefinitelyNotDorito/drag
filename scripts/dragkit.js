@@ -522,7 +522,12 @@ class DragFactory{
                                                         e.target.parentElement.remove()
                                                         noteList.appendChild(this.createElement('li', {
                                                             classes: ['note-list-item', 'note-list-thing'],
-                                                            text: result
+                                                            text: result,
+                                                            events: {
+                                                                click: (e) => {
+                                                                    this.noteEdit(e.target);
+                                                                }
+                                                            }
                                                         }))
                                                     }
                                                 }
@@ -541,7 +546,12 @@ class DragFactory{
                                                     newNoteInput.remove();
                                                     noteList.appendChild(this.createElement('li', {
                                                         classes: ['note-list-item', 'note-list-thing'],
-                                                        text: result
+                                                        text: result,
+                                                        events: {
+                                                            click: (e) => {
+                                                                this.noteEdit(e.target);
+                                                            }
+                                                        }
                                                     }))
                                                 }
                                             }
@@ -611,9 +621,6 @@ class DragFactory{
         element.style.position = 'absolute'
         return new Draggable(element, handle)
     }
-    editNote(element){
-        //TODO
-    }
     //makes custom prompts to get user input
     makeCustomPrompt(message = '', title = '', plcholder = '', maxlen = null){
 
@@ -681,6 +688,33 @@ class DragFactory{
             }
             this.massChilren(document.body, [barrier, customPrompt]); 
         }); 
+    }
+    noteEdit(element){
+        const notetext = element.textContent
+
+        const input = this.createElement('input', {
+            attributes: {
+                type: 'text',
+                value: notetext
+            },
+            classes: ['note-edit-input'],
+            events: {
+                keydown: (e) => {
+                    if (e.key === 'Enter') {
+                        element.textContent = e.target.value;
+                        element.classList.remove('editing');
+                    }
+                },
+                blur: () => {
+                    element.textContent = input.value;
+                    element.classList.remove('editing');
+                }
+            }
+        })
+        element.textContent = '';
+        element.appendChild(input);
+        element.classList.add('editing');
+        input.focus();
     }
 }
 
