@@ -497,7 +497,12 @@ class DragFactory{
                                 try{
                                     noteList.appendChild(this.createElement('li', {
                                         classes: ['note-list-item', 'note-list-thing'],
-                                        text: await this.makeCustomPrompt('Enter new note: ', 'NOTES', 'dont be shy...', 32)
+                                        text: await this.makeCustomPrompt('Enter new note: ', 'NOTES', 'dont be shy...', 32),
+                                        events: {
+                                            click: (e) => {
+                                                this.noteEdit(e.target);
+                                            }
+                                        }
                                     }))
 
                                 }
