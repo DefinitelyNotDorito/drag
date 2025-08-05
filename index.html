@@ -1,39 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v7.0.0/css/all.css">
+    <link rel="stylesheet" href="styles/common.css">
+    <link rel="stylesheet" href="styles/drag.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="style2.css">
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css">
-    
-    <title>DragDrop</title>
+    <title>DND: Drag</title>
 </head>
 <body>
-    <div class="kit-grid">
-        <div class="kit-stuff-container">
-            <button class="kit-hide-button"><i class="fa-solid fa-chevron-left kit-hide-icon"></i></button>
-            <button class="kit-clear-all"><i class="fa-solid fa-x kit-clear-icon"></i></button>
-            <div class="kit-button-container">
-                <button class="kit-button kit-notes kit-top yellow" id="kit-b-notes"><i class="fa-solid fa-note-sticky"></i></button>
-                <button class="kit-button blue" id="kit-b-timers"><i class="fa-solid fa-clock"></i></button>
-                <button class="kit-button kit-bottom gray" id="kit-b-other"><i class="fa-solid fa-gear"></i></button>
-            </div>
+    <header class="df spb-c header">
+        <div class="logo-cont">
+            <h1 class="logo dfc">Drag</h1>
         </div>
-        <div class="kit-tab-container">
-            <div class="kit-tab hidden yellow" id="notes">
-                <button class="kit-add-button add-note" data-type="note" data-color="yellow">Add note (yellow)</button>
-            </div>
-            <div class="kit-tab hidden blue" id="timers">
-                <button class="kit-add-button add-timer" data-type="timer" data-color="blue">Add Timer</button>
-            </div>
-            <div class="kit-tab hidden" id="other">
-                <button class="kit-add-button add-other" data-type="settings" data-color="gray">Add Settings</button>
-            </div>
+        <div class="header-button-cont">
+            <button class="theme-toggle round-btn">
+                <i class="fas fa-moon"></i>
+            </button>
         </div>
-    </div>
-    <span class="input-mirror"></span>
+    </header>
+    <main>
+        <section class="drag-container">
+            <button class="drag-toolbox-toggle round-btn active">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div class="drag-toolbox">
+                <div class="toolbox-top df spb-c">
+                    <span>Toolbox</span>
+                    <select id="category-select" name="category">
+                        <option value="All">Categories</option>
+                        <option value="note">Notes</option>
+                        <option value="timer">Timers</option>
+                        <option value="special">Special</option>
+                    </select>
+                </div>
+                <div class="toolbox-item-cont">
+                    <div class="toolbox-item note yellow dfc" data-note-type="text">
+                        <h3>Add Note</h3><span>(text)</span>
+                    </div>
+                    <div class="toolbox-item note yellow dfc" data-note-type="table">
+                        <h3>Add Note</h3><span>(table)</span>
+                    </div>
+                    <div class="toolbox-item note yellow dfc" data-note-type="list">
+                        <h3>Add Note</h3><span>(list)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script src="scripts/dragkit.js" type="module"></script>
 </body>
-<script src="scripts/dragkit.js"></script>
 </html>

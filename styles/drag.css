@@ -1,0 +1,211 @@
+.header{
+    height: 7em;
+    background-color: #00000016;
+    padding: 0 1em;
+}
+
+.theme-toggle{
+    background-color: var(--theme-toggle-color);
+    color: var(--background-color);
+}
+
+body{
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.drag-container{
+    height: clamp(90vh, 95vh, 100%);
+}
+
+.drag-toolbox-toggle{
+    position: absolute;
+    top: 9em;
+    left: 0.5em;
+    background-color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    color: white;
+    box-shadow: 2px 2px 7px -1px rgba(0, 0, 0, 0.4);
+}
+
+.drag-toolbox-toggle:disabled, .drag-toolbox-toggle:disabled:hover{
+    cursor: not-allowed;
+    border-color: rgb(255, 100, 100);
+    background-color: rgb(255, 100, 100);
+    color: white;
+}
+
+.logo{
+    gap: 0.1em;
+    text-align: center;
+    font-weight: 700;
+}
+
+.drag-toolbox{
+    position: absolute;
+    top: 14em;
+    height: clamp(20em, 50vh, 100%);
+    background-color: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    border: 3px solid var(--background-color);
+    outline: 2px solid var(--primary-color);
+    border-left: none;
+    width: clamp(15em, 18em, 100%);
+    padding: 1em 0.5em;
+    border-radius: 0 1em 1em 0;
+}
+
+.slide-in-left{
+    animation: slideinLeft 0.5s ease-in-out;
+}
+
+.slide-out-left{
+    animation: slideoutLeft 0.5s ease-in-out;
+}
+
+.toolbox-item-cont{
+    margin-top: 1.5em;
+    max-height: 88%;
+    overflow-y: scroll;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+    gap: 0.3em;
+    padding-right: 1em;
+}
+
+.toolbox-item{
+    max-width: 100%;
+    height: clamp(5em, 10vh, 15em);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border-radius: 0.5em;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    text-align: center;
+    flex-direction: column;
+}
+.toolbox-item h3{
+    font-size: 1.2em;
+    margin: 0;
+}
+
+.toolbox-item:hover{
+    background-color: white;
+    color: black;
+    cursor: pointer;
+    border: 2px solid var(--background-color);
+}
+
+.drag-element{
+    position: absolute;
+    display: grid;
+    grid-template-rows: 2.5em auto;
+    background-color: var(--background-color);
+    border-radius: 1em;
+    min-width: 15em;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4); 
+    transition: box-shadow 0.2s ease-in-out;
+    user-select: none;
+}
+
+.drag-element.dragging {
+    cursor: grabbing;
+    z-index: 69;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.6);
+    opacity: 0.8;
+}
+
+.recent{
+    z-index: 68;
+}
+
+.drag-top-bar{
+    z-index: 0;
+    cursor: grab;
+    width: 100%;
+    padding: 0 0.65em; 
+    padding-right: 0.2em;
+    color: white;
+    background-color: var(--text-color);
+
+    font-weight: 500;
+    border-radius: 0.5rem 0.5rem 0 0;
+    transition: border-radius 0.2s ease-in-out;
+}
+
+.drag-content{
+    padding: 0.5em;
+    overflow-y: auto;
+    min-height: 8em;
+    max-height: fit-content;
+}
+
+.top-bar-buttons{
+    display: flex;
+    gap: 0.1em;
+    align-items: center;
+    margin-left: 0.5em;
+}
+
+.top-bar-button{
+    background-color: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    border-radius: 99em;
+    aspect-ratio: 1;
+}
+
+.close-button:hover{
+    color: rgb(255, 100, 100);
+    background-color: #ffffff;
+}
+
+.drag-element.collapsed{
+    min-width: 0;
+    .drag-top-bar{
+        border-radius: 1em;
+        width: fit-content;
+    }
+    .drag-content, .settings-button{
+        display: none;
+    }
+    .top-bar-buttons{
+        gap: 0;
+    }
+}
+
+.note-textarea{
+    min-width: 100%;
+    min-height: calc(100% - 0.5rem);
+    width: 100%;
+    height: 100%;
+    max-width: 30em;
+    max-height: 20em;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: var(--text-color);
+    font-family: 'Roboto', sans-serif;
+    font-size: 1em;
+}
+
+@keyframes slideinLeft {
+    from {
+        transform: translateX(-100%);
+    }
+    to {
+        transform: translateX(0);
+    }   
+}
+
+@keyframes slideoutLeft {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-100%);
+    }   
+}
